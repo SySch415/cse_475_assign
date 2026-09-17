@@ -19,14 +19,16 @@ diabetes_y_test = diabetes_y[-20:]
 print("Training input variable shape: ", diabetes_X_train.shape)
 print("Test input variable shape: ", diabetes_X_test.shape)
 
+print()
+
 # Lease Squares section
 
 bias = np.ones((422, 1))
 design_X = np.hstack((bias, diabetes_X_train))
-print("Design:", design_X.shape)
+# print("Design:", design_X.shape)
 
 diabetes_y_train_col = diabetes_y_train.reshape(-1, 1)
-print("y_train_col:", diabetes_y_train_col.shape)
+# print("y_train_col:", diabetes_y_train_col.shape)
 
 design_dot_inverse = (np.linalg.inv(design_X.T @ design_X))
 theta = design_dot_inverse @ design_X.T @ diabetes_y_train_col
@@ -46,7 +48,7 @@ for t in range(100000):
 
 model = LinearRegression()
 model.fit(diabetes_X_train, diabetes_y_train)
-print("Least Squares bias and theta 1:", theta)
+# print("Least Squares bias and theta 1:", theta)
 print("Gradient Descent bias and theta 1:", rand_theta)
 print("scikit bias:", model.intercept_)
 print("scikit theta_1:", model.coef_)
