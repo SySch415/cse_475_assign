@@ -19,6 +19,8 @@ diabetes_y_test = diabetes_y[-20:]
 print("Training input variable shape: ", diabetes_X_train.shape)
 print("Test input variable shape: ", diabetes_X_test.shape)
 
+# Lease Squares section
+
 bias = np.ones((422, 1))
 design_X = np.hstack((bias, diabetes_X_train))
 print("Design:", design_X.shape)
@@ -28,6 +30,9 @@ print("y_train_col:", diabetes_y_train_col.shape)
 
 design_dot_inverse = (np.linalg.inv(design_X.T @ design_X))
 theta = design_dot_inverse @ design_X.T @ diabetes_y_train_col
+
+
+# Gradient Descent Section
 
 rand_theta = np.zeros((2, 1))
 learn_rate = 0.03
@@ -39,11 +44,9 @@ for t in range(100000):
     grad_theta_L = 2 / design_X.shape[0] * (design_X.T @ grad_theta_L)
     rand_theta = rand_theta - learn_rate * grad_theta_L
 
-
-print("GD theta's:", rand_theta)
-print("LS theta:", theta)
-
 model = LinearRegression()
 model.fit(diabetes_X_train, diabetes_y_train)
+print("Least Squares bias and theta 1:", theta)
+print("Gradient Descent bias and theta 1:", rand_theta)
 print("scikit bias:", model.intercept_)
 print("scikit theta_1:", model.coef_)
