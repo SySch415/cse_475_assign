@@ -24,8 +24,8 @@ class Model(nn.Module):
     def forward(self, x):
         # [TODO] your code
         lin_score = self.linear_layer(x)
-        y = torch.sigmoid(lin_score)
-        return y
+        probabilty = torch.sigmoid(lin_score)
+        return probabilty
 
 
 trainloader = data.DataLoader(
@@ -45,5 +45,12 @@ plot_scatter(ax, X, y)
 model = Model().to(device)
 optimzer = optim.AdamW(model.parameters(), lr=1e-2, weight_decay=1e-6)
 
+"""
+outp = model(X)
+print(outp.shape)
+print(outp.min(), outp.max())
+print()
+
 print(model.linear_layer.weight)
 print(model.linear_layer.bias)
+"""
