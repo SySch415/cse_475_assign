@@ -43,7 +43,7 @@ fig, ax = plt.subplots(1, 1, figsize=(5, 5))
 plot_scatter(ax, X, y)
 
 model = Model().to(device)
-optimzer = optim.AdamW(model.parameters(), lr=1e-2, weight_decay=1e-6)
+optimizer = optim.AdamW(model.parameters(), lr=1e-2, weight_decay=1e-6)
 
 """
 outp = model(X)
@@ -54,3 +54,14 @@ print()
 print(model.linear_layer.weight)
 print(model.linear_layer.bias)
 """
+
+
+criterion = nn.BCELoss()
+for itr in range(1, 2001):
+    optimizer.zero_grad()
+    yh = model(X)  # forward pass
+    # compute loss # [TODO] your code
+    loss = criterion(yh, yh.float())
+    print(itr, loss.item())
+    loss.backward()  # backward pass
+    optimizer.step()
