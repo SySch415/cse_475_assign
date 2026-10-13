@@ -55,13 +55,12 @@ print(model.linear_layer.weight)
 print(model.linear_layer.bias)
 """
 
-
 criterion = nn.BCELoss()
 for itr in range(1, 2001):
     optimizer.zero_grad()
     yh = model(X)  # forward pass
     # compute loss # [TODO] your code
-    loss = criterion(yh, yh.float())
+    loss = criterion(yh.squeeze(-1), y.float())
     print(itr, loss.item())
     loss.backward()  # backward pass
     optimizer.step()
