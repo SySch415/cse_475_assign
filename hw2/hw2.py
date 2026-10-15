@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from torch import optim
 
-plt.show()
+# plt.show()
 
 sys.path.append("../..")
 sys.path.append("..")
@@ -64,3 +64,31 @@ for itr in range(1, 2001):
     print(itr, loss.item())
     loss.backward()  # backward pass
     optimizer.step()
+
+with torch.no_grad():
+    fig = plt.figure(figsize=(4, 4))
+    ax = plt.gca()
+
+    probability = model(X).squeeze(-1)
+    predicted = (probability >= 0.5).long()
+    plot_scatter(ax, X, predicted)
+
+    theta0 = model.linear_layer.bias[0].item()
+    thetal = model.linear_layer.weight[0, 0].item()
+    theta2 = model.linear_layer.weight[0, 1].item()
+
+    x1_min = X[:, 0].min().item()
+    x1_max = X[:, 0].max().item()
+    x2_min = X[:, 1].min().item()
+    x2_max = X[:, 1].max().item()
+
+    if abs(theta2) > 1e-8:
+        x1_val = np.linspace(x1_min, x1_max, 100)
+        x2_val = -(theta0 + thetal * x1_val) / theta2
+
+    else:
+        ax.axvline(-theta0 / thetal)
+
+    ax.set_xlim(x1_min, x1_max)
+    ax.set_ylim(x2_min, x2_max)
+    plt.show()
