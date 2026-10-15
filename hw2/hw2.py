@@ -85,10 +85,46 @@ with torch.no_grad():
     if abs(theta2) > 1e-8:
         x1_val = np.linspace(x1_min, x1_max, 100)
         x2_val = -(theta0 + thetal * x1_val) / theta2
+        ax.plot(x1_val, x2_val, "m")
 
     else:
-        ax.axvline(-theta0 / thetal)
+        ax.axvline(-theta0 / thetal, color="m")
 
     ax.set_xlim(x1_min, x1_max)
     ax.set_ylim(x2_min, x2_max)
     plt.show()
+
+
+def binary_cross_entropy(y_true, y_pred, epsilon=1e-12):
+    """
+    Compute the binary cross-entropy loss.
+
+    Parameters:
+    y_true (torch array): Ground truth labels (0 or 1).
+    y_pred (torch array): Predicted probabilities (between 0 and 1).
+    epsilon (float): Small value to prevent log(0). [NOTE] do not change this
+
+    Returns:
+    float: Binary cross-entropy loss.
+    """
+    # Clip predictions to avoid log(0) issues
+    y_pred = torch.clip(y_pred, epsilon, 1 - epsilon)
+
+    # Compute BCE loss
+    loss = torch.mean(y_true * torch.log(y_pred) + (1 - y_true) * torch.log(1 - y_pred))
+    return loss
+
+
+learning_rate = 1e-2
+for t in range(2000):
+    # Forward pass: compute predicted y
+    yh = model2(X)
+
+    # Compute and print loss
+    loss = binary_cross_entropy(y.float(), yh.squeeze())  # np.square(y_pred - y).sum()
+    print(loss)
+
+    # [TODO] your code: iteratively update the model parameters
+    # The model parameters theta_0, theta_1, theta_2 can be updated individually
+    # by (1) computing the gradient using the analytical expression you obtained from the part 1 of the homework
+    # by (2) updating the model parameters into the "DESCENDING" direction by the step size (that is, learning rate)
