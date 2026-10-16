@@ -95,6 +95,12 @@ with torch.no_grad():
     plt.show()
 
 
+model2 = Model().to(device)
+
+# print(model2.linear_layer.weight)
+# print(model2.linear_layer.bias)
+
+
 def binary_cross_entropy(y_true, y_pred, epsilon=1e-12):
     """
     Compute the binary cross-entropy loss.
@@ -111,7 +117,9 @@ def binary_cross_entropy(y_true, y_pred, epsilon=1e-12):
     y_pred = torch.clip(y_pred, epsilon, 1 - epsilon)
 
     # Compute BCE loss
-    loss = torch.mean(y_true * torch.log(y_pred) + (1 - y_true) * torch.log(1 - y_pred))
+    loss = -torch.mean(
+        y_true * torch.log(y_pred) + (1 - y_true) * torch.log(1 - y_pred)
+    )
     return loss
 
 
@@ -121,7 +129,9 @@ for t in range(2000):
     yh = model2(X)
 
     # Compute and print loss
-    loss = binary_cross_entropy(y.float(), yh.squeeze())  # np.square(y_pred - y).sum()
+    loss = binary_cross_entropy(
+        y.float(), yh.squeeze(-1)
+    )  # np.square(y_pred - y).sum()
     print(loss)
 
     # [TODO] your code: iteratively update the model parameters
