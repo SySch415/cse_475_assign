@@ -138,3 +138,40 @@ for t in range(2000):
     # The model parameters theta_0, theta_1, theta_2 can be updated individually
     # by (1) computing the gradient using the analytical expression you obtained from the part 1 of the homework
     # by (2) updating the model parameters into the "DESCENDING" direction by the step size (that is, learning rate)
+    with torch.no_grad():
+        l_theta = -y.float() + yh.squeeze(-1)
+        grad_theta_0 = l_theta.mean()
+        grad_theta_1 = (l_theta * X[:, 0]).mean()
+        grad_theta_2 = (l_theta * X[:, 1]).mean()
+
+        model2.linear_layer.bias[0] -= learning_rate * grad_theta_0
+        model2.linear_layer.weight[0, 0] -= learning_rate * grad_theta_1
+        model2.linear_layer.weight[0, 1] -= learning_rate * grad_theta_2
+with torch.no_grad():
+    fig = plt.figure(figsize=(4, 4))
+    ax = plt.gca()
+
+    probability = model2(X).squeeze(-1)
+    predicted = (probability >= 0.5).long()
+    plot_scatter(ax, X, predicted)
+
+    theta0 = model2.linear_layer.bias[0].item()
+    thetal = model2.linear_layer.weight[0, 0].item()
+    theta2 = model2.linear_layer.weight[0, 1].item()
+
+    x1_min = X[:, 0].min().item()
+    x1_max = X[:, 0].max().item()
+    x2_min = X[:, 1].min().item()
+    x2_max = X[:, 1].max().item()
+
+    if abs(theta2) > 1e-8:
+        x1_val = np.linspace(x1_min, x1_max, 100)
+        x2_val = -(theta0 + thetal * x1_val) / theta2
+        ax.plot(x1_val, x2_val, "m")
+
+    else:
+        ax.axvline(-theta0 / thetal, color="m")
+
+    ax.set_xlim(x1_min, x1_max)
+    ax.set_ylim(x2_min, x2_max)
+    plt.show()
