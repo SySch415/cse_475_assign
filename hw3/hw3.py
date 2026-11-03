@@ -139,7 +139,7 @@ plot_scatter(ax, X, y)
 
 class Model(nn.Module):
     def __init__(self, device="cpu"):
-        super().__init__()
+        super().__init__()  # my ruff linter prefers super() over super(Model, self)
 
         # [TODO] your code
         self.net = nn.Sequential(
