@@ -147,6 +147,8 @@ class Model(nn.Module):
             nn.ReLU(),
             nn.Linear(128, 128),
             nn.ReLU(),
+            nn.Linear(128, 128),
+            nn.ReLU(),
             nn.Linear(128, 1),
         )
 
@@ -167,3 +169,48 @@ for itr in range(1, 1001):
     print(itr, loss.item())
     loss.backward()
     optimizer.step()
+
+with torch.no_grad():
+    fig = plt.figure(figsize=(4, 4))
+    axes = []
+    axes.append(fig.add_subplot(1, 1, 1))  # ,sharex=True,sharey=True))
+    xs, ys = X, y  # sample_gaussian(n_samples=200) ; s = torch.linspace(0, 1, 10)
+    y_pred = model(xs)
+    print(y_pred.shape)
+    label = (y_pred[:, 0] >= 0.5).long()
+    print(label)
+    colors = ["lime", "tomato"]
+    for i in range(1024):
+        axes[0].scatter(xs[i, 0], xs[i, 1], c=colors[label[i]], edgecolor="none", s=30)
+        axes[0].scatter(
+            xs[i + 1024 :, 0],
+            xs[i + 1024 :, 1],
+            c=colors[label[i + 1024]],
+            edgecolor="none",
+            s=30,
+        )
+    axes[0].set_xlim(xs[:, 0].min(), xs[:, 0].max())
+    axes[0].set_ylim(xs[:, 1].min(), xs[:, 1].max())
+    plt.show()
+
+    print(xs.shape)
+    err = torch.sum(torch.abs(label - y))
+    print(err)
+
+# sigmoid
+
+with torch.no_grad():
+    out = model.net(X).squeeze()
+    pred = torch.sigmoid(out)
+
+    colors = ["green", "red"]
+    plot_colors = []
+    for label in y:
+        plot_colors.append(colors[int(label)])
+
+    plt.figure(figsize=(6, 4))
+    plt.scatter(out, pred, c=plot_colors, s=20)
+    s = torch.linspace(out.min() - 2, out.max() + 2, 200)
+    plt.plot(s, torch.sigmoid(s), "k-")
+
+    plt.show()
