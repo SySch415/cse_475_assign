@@ -191,3 +191,16 @@ for epoch in range(EPOCHS):
         torch.save(model.state_dict(), model_path)
 
     epoch_number += 1
+
+correct_labels = 0
+total_labels = 0
+
+model.eval()
+with torch.no_grad():
+    for vinputs, vlabels in validation_loader:
+        voutputs = model(vinputs)
+        pred = voutputs.argmax(dim=1)
+        correct_labels += (pred == vlabels).sum()
+        total_labels += vlabels.size(0)
+
+print("total accuracy: ", correct_labels / total_labels)
